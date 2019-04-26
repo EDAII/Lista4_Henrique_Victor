@@ -10,8 +10,20 @@ class Paciente:
         self.ordemChegada = ordemChegada
     
     def __gt__(self, outro):
-        if self.gravidade == outro.gravidade
-            return self.ano > outro.ano
+        # Ordem de Prioridade
+        #
+        # 1. Maior Gravidade
+        # 2. Idosos (65+) (Entre eles, maior idade)
+        # 3. Crianças e Adolescentes (0-17) (Entre elas, menor idade)
+        # 5. Adultos (18-64) (Entre eles, maior idade)
+
+        if self.gravidade == outro.gravidade:
+            if self.idade >= 65 or outro.idade >= 65:
+                return self.idade > outro.idade
+            elif self.idade <= 17 or outro.idade <= 17:
+                return self.idade < outro.idade
+            else:
+                return self.idade > outro.idade
         
         return self.gravidade > outro.gravidade
     

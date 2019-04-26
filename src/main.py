@@ -49,19 +49,19 @@ class Interface:
         B4 = Button(frame3, text="Mostrar Fila (Ordem de Chegada)", width=55, bg=button_color, font=option_button_font, command=lambda: mostrar_fila(self.desordenado, len(self.desordenado)))
         B4.pack(side=LEFT)
 
-        B5 = Button(frame3, text="Mostrar Fila (Ordenado por Gravidade e Idade)", width=55, bg=button_color, font=option_button_font, command=self.mostrar_fila_ordenado)
+        B5 = Button(frame3, text="Mostrar Fila (Ordenado por Gravidade e Idade)", width=55, bg=button_color, font=option_button_font, command=self.mostrar_fila_ordenada)
         B5.pack(side=RIGHT)
 
         B6 = Button(frame4, text="Comparar Metodos de Ordenacao (Fila atual)", width=55, bg=button_color, font=option_button_font, command=lambda: comparar_ordenacoes(self.fila, self.desordenado))
         B6.pack(side=LEFT)
 
-        B7 = Button(frame4, text="Comparar Metodos de Ordenacao (Varias Filas Aleatorios)", width=55, bg=button_color, font=option_button_font, command=comparacoes)
+        B7 = Button(frame4, text="Comparar Metodos de Ordenacao (Varias Filas Aleatorias)", width=55, bg=button_color, font=option_button_font, command=comparacoes)
         B7.pack(side=RIGHT)
 
-        B8 = Button(frame5, text="Ler Fila de Arquivo", width=55, bg=button_color, font=option_button_font, command=self.abre_arquivo)
+        B8 = Button(frame5, text="Abrir Arquivo", width=55, bg=button_color, font=option_button_font, command=self.abre_arquivo)
         B8.pack(side=LEFT)
 
-        B9 = Button(frame5, text="Salvar Fila em Arquivo", width=55, bg=button_color, font=option_button_font, command=self.salva_arquivo)
+        B9 = Button(frame5, text="Salvar", width=55, bg=button_color, font=option_button_font, command=self.salva_arquivo)
         B9.pack(side=RIGHT)
     
 
@@ -101,7 +101,10 @@ class Interface:
         try:
             valor = int(valor)
             if valor > 0:
-                gerar_pacientes_aleatorios(self.fila, valor)
+                inicio = time.perf_counter()
+                self.fila = gerar_pacientes_aleatorios(self.fila, valor)
+                fim = time.perf_counter()
+                print(fim - inicio)
                 self.desordenado = self.fila.copy()
                 self.ordenado = False
                 tela.destroy()
@@ -135,25 +138,25 @@ class Interface:
         text = Label(texto, text="Digite os dados do Paciente", font=text_font, pady=10)
         text.pack()
 
-        anotext = Label(frame1, text="Ano: ", padx=13)
-        anotext.pack(side=LEFT)
-        ano = Entry(frame1)
-        ano.pack(side=RIGHT)
+        nometext = Label(frame1, text="Nome:           ", padx=13)
+        nometext.pack(side=LEFT)
+        nome = Entry(frame1, width=25)
+        nome.pack(side=RIGHT)
 
-        placatext = Label(frame2, text="Placa: ", padx=8)
-        placatext.pack(side=LEFT)
-        placa = Entry(frame2)
-        placa.pack(side=RIGHT)
+        sexotext = Label(frame2, text="Sexo (M/F):      ", padx=8)
+        sexotext.pack(side=LEFT)
+        sexo = Entry(frame2, width=25)
+        sexo.pack(side=RIGHT)
 
-        donotext = Label(frame3, text="Dono: ", padx=8)
-        donotext.pack(side=LEFT)
-        dono = Entry(frame3)
-        dono.pack(side=RIGHT)
+        idadetext = Label(frame3, text="Idade:              ", padx=8)
+        idadetext.pack(side=LEFT)
+        idade = Entry(frame3, width=25)
+        idade.pack(side=RIGHT)
 
-        modelotext = Label(frame4, text="Modelo: ")
-        modelotext.pack(side=LEFT)
-        modelo = Entry(frame4)
-        modelo.pack(side=RIGHT)
+        gravidadetext = Label(frame4, text="Gravidade (1-5): ")
+        gravidadetext.pack(side=LEFT)
+        gravidade = Entry(frame4, width=25)
+        gravidade.pack(side=RIGHT)
 
         mensagem = Label(msg, text=" ", font=error_msg_font)
         mensagem.pack()
@@ -161,14 +164,20 @@ class Interface:
         botaoCancel = Button(botoes, text="CANCELAR", font=confirmation_button_font, bg='red2', command=tela.destroy)
         botaoCancel.pack(side=LEFT)
 
-        botaoSend = Button(botoes, text="ENVIAR", font=confirmation_button_font, bg='green2', command=lambda: self.verif_cadastro(ano.get(), placa.get(), dono.get(), modelo.get(), mensagem, tela))
+        botaoSend = Button(botoes, text="ENVIAR", font=confirmation_button_font, bg='green2', command=lambda: self.verif_cadastro(nome.get(), sexo.get(), idade.get(), gravidade.get(), mensagem, tela))
         botaoSend.pack(side=RIGHT)
 
         tela.geometry("650x350+650+300")
         tela.mainloop()
     
 
-    def verif_cadastro(self, ano, placa, dono, modelo, mensagem, tela):
+    def verif_cadastro(self, nome, sexo, idade, gravidade, mensagem, tela):
+        paciente_unico(self.fila, ano, placa, dono, modelo)
+        self.desordenado.append(self.fila[len(self.fila)-1])
+        self.ordenado = False
+        self.msgFila["text"] = "Quantidade de Pessoas: {}".format(len(self.fila))
+        self.msgOrdenacao["text"] = "Tipo de Ordenacao: Nenhuma"
+        tela.destroy()
         try:
             ano = verif_ano(ano)
             ano = int(ano)
@@ -188,24 +197,14 @@ class Interface:
                 tela.destroy()
         except ValueError:
             mensagem["text"] = ano
-    
 
     def ord_aux(self, tipo, fila, tela):
-        if tipo == "MS":
-            merge_sort(fila)
-            self.msgOrdenacao["text"] = "Tipo de Ordenacao: Merge Sort"
-        elif tipo == "QSIR":
-            quick_sort_inst_rec(fila, 0, len(fila)-1)
-            self.msgOrdenacao["text"] = "Tipo de Ordenacao: Quick Sort (Instavel e Recursivo)"
-        elif tipo == "QSER":
-            self.fila = quick_sort_est_rec(fila)
-            self.msgOrdenacao["text"] = "Tipo de Ordenacao: Quick Sort (Estavel e Recursivo)"
-        elif tipo == "QSII":
-            quick_sort_inst_iterat(fila, 0, len(fila)-1)
-            self.msgOrdenacao["text"] = "Tipo de Ordenacao: Quick Sort (Instavel e Interativo)"
-        else:
-            self.fila = bucket_sort(fila)
-            self.msgOrdenacao["text"] = "Tipo de Ordenacao: Bucket Sort"
+        if tipo == "HSR":
+            heap_sort_recursivo(fila)
+            self.msgOrdenacao["text"] = "Tipo de Ordenacao: Heap Sort Recursivo"
+        elif tipo == "HSI":
+            heap_sort_interativo(fila)
+            self.msgOrdenacao["text"] = "Tipo de Ordenacao: Heap Sort Interativo"
         
         self.ordenado = True
         tela.destroy()
@@ -228,22 +227,13 @@ class Interface:
             text = Label(top, text="Escolha um dos metodos abaixo", font=text_font, pady=10)
             text.grid(row=0, pady=5)
 
-            B1 = Button(middle, text="Merge Sort", width=30, bg=button_color, font=option_button_font, command=lambda: self.ord_aux("MS", self.fila, tela))
+            B1 = Button(middle, text="Heap Sort Recursivo", width=30, bg=button_color, font=option_button_font, command=lambda: self.ord_aux("HSR", self.fila, tela))
             B1.grid(row=1, padx=10, pady=5)
 
-            B2 = Button(middle, text="Quick Sort (Instavel e Recursivo)", width=30, bg=button_color, font=option_button_font, command=lambda: self.ord_aux("QSIR", self.fila, tela))
+            B2 = Button(middle, text="Heap Sort Interativo", width=30, bg=button_color, font=option_button_font, command=lambda: self.ord_aux("HSI", self.fila, tela))
             B2.grid(row=2, padx=10, pady=5)
 
-            B3 = Button(middle, text="Quick Sort (Estavel e Recursivo)", width=30, bg=button_color, font=option_button_font, command=lambda: self.ord_aux("QSER", self.fila, tela))
-            B3.grid(row=3, padx=10, pady=5)
-
-            B4 = Button(middle, text="Quick Sort (Instavel e Interativo)", width=30, bg=button_color, font=option_button_font, command=lambda: self.ord_aux("QSII", self.fila, tela))
-            B4.grid(row=4, padx=10, pady=5)
-
-            B5 = Button(middle, text="Bucket Sort", width=30, bg=button_color, font=option_button_font, command=lambda: self.ord_aux("BS", self.fila, tela))
-            B5.grid(row=5, padx=10, pady=5)
-
-            tela.geometry("500x330+750+300")
+            tela.geometry("500x180+750+300")
             tela.mainloop()
     
 
