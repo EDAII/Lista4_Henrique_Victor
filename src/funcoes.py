@@ -9,47 +9,32 @@ from ordenacoes import *
 import plotly
 import plotly.graph_objs as go
 import numpy as np
-from threading import Thread
+import multiprocessing as mp
 
 maiuscula = string.ascii_uppercase
 minuscula = string.ascii_lowercase
+output = mp.Queue()
 
-quant_threads = 2
+quant_process = 8
 
 def gerar_pacientes_aleatorios(tamanho):
-    fila = [0] * tamanho
-    threads = []
-    comeco, fim = 0, tamanho//quant_threads
-    intervalo = tamanho//quant_threads
-    for i in range(quant_threads):
-        if i == quant_threads-1:
-            fim = tamanho
-
-        thread = Thread(target=gerar_pacientes_aleatorios_aux, args=[fila, comeco, fim])
-        thread.start()
-        threads.append(thread)
-        comeco = fim
-        fim += intervalo
-
-    for t in threads:
-        t.join()
+    pool = mp.Pool(processes=quant_process)
+    fila = pool.map(gerar_pacientes_aleatorios_aux, range(0, tamanho))
 
     return fila
 
 
-def gerar_pacientes_aleatorios_aux(fila, comeco, fim):
-    for i in range(comeco, fim):
-        nome = ''.join([random.choice(maiuscula)])
-        nome += ''.join(random.choice(minuscula) for _ in range(random.randrange(3, 10)))
+def gerar_pacientes_aleatorios_aux(i):
+    nome = ''.join([random.choice(maiuscula)])
+    nome += ''.join(random.choice(minuscula) for _ in range(random.randrange(3, 10)))
 
-        sexo = ''.join([random.choice("MF")])
+    sexo = ''.join([random.choice("MF")])
 
-        idade = random.randrange(0, 121)
+    idade = random.randrange(0, 121)
 
-        gravidade = random.randrange(1, 6)
+    gravidade = random.randrange(1, 6)
 
-        fila[i] = Paciente(nome, sexo, idade, gravidade, i+1)
-
+    return Paciente(nome, sexo, idade, gravidade, i+1)
 
 def paciente_unico(fila, nome, sexo, idade, gravidade):
     fila.append(Paciente(nome, sexo, idade, gravidade, len(fila) + 1))
