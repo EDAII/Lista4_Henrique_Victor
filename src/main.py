@@ -102,7 +102,7 @@ class Interface:
             valor = int(valor)
             if valor > 0:
                 inicio = time.perf_counter()
-                self.fila = gerar_pacientes_aleatorios(self.fila, valor)
+                self.fila = gerar_pacientes_aleatorios(valor)
                 fim = time.perf_counter()
                 print(fim - inicio)
                 self.desordenado = self.fila.copy()

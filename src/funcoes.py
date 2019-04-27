@@ -16,42 +16,23 @@ minuscula = string.ascii_lowercase
 
 quant_threads = 2
 
-def gerar_pacientes_aleatorios(fila, tamanho):
+def gerar_pacientes_aleatorios(tamanho):
     fila = [0] * tamanho
-
-    """
-    thread1 = Thread(target=gerar_pacientes_aleatorios_aux, args=[fila, 0, tamanho//4])
-    thread2 = Thread(target=gerar_pacientes_aleatorios_aux, args=[fila, tamanho//4, tamanho//2])
-    thread3 = Thread(target=gerar_pacientes_aleatorios_aux, args=[fila, tamanho//2, 3*tamanho//4])
-    thread4 = Thread(target=gerar_pacientes_aleatorios_aux, args=[fila, 3*tamanho//4, tamanho])
-
-    thread1.start()
-    thread2.start()
-    thread3.start()
-    thread4.start()
-
-    thread1.join()
-    thread2.join()
-    thread3.join()
-    thread4.join()
-    """
-
-    thread = [0] * quant_threads
+    threads = []
     comeco, fim = 0, tamanho//quant_threads
     intervalo = tamanho//quant_threads
     for i in range(quant_threads):
         if i == quant_threads-1:
             fim = tamanho
 
-        thread[i] = Thread(target=gerar_pacientes_aleatorios_aux, args=[fila, comeco, fim])
+        thread = Thread(target=gerar_pacientes_aleatorios_aux, args=[fila, comeco, fim])
+        thread.start()
+        threads.append(thread)
         comeco = fim
         fim += intervalo
 
-    for i in range(quant_threads):
-        thread[i].start()
-
-    for i in range(quant_threads):
-        thread[i].join()
+    for t in threads:
+        t.join()
 
     return fila
 
