@@ -13,9 +13,10 @@ import multiprocessing as mp
 
 maiuscula = string.ascii_uppercase
 minuscula = string.ascii_lowercase
-output = mp.Queue()
-
+potencia_maxima = 20
 quant_process = 8
+fila_HSR = []
+fila_HSI = []
 
 def gerar_pacientes_aleatorios(tamanho):
     pool = mp.Pool(processes=quant_process)
@@ -104,13 +105,77 @@ def comparar_ordenacoes(fila, desordenado):
         plt.text(i-0.4, max(tempos)/100, " "+str(v), color='black',
                  va='center', fontweight='bold', fontsize=12)
 
-    plt.suptitle(
-        'Tempo em segundos para ordenar {} pacientes'.format(len(fila)))
+    plt.suptitle('Tempo em segundos para ordenar {} pacientes'.format(len(fila)))
     plt.show()
 
 
-def comparacoes():
-    pass
+def calc_tempos_HSR(i):
+    inicio = time.perf_counter()
+    heap_sort_recursivo(fila_HSR[i])
+    fim = time.perf_counter()
+    return (fim-inicio)
 
-def printar_grafico():
-    pass
+def calc_tempos_HSI(i):
+    inicio = time.perf_counter()
+    heap_sort_interativo(fila_HSI[i])
+    fim = time.perf_counter()
+    return (fim-inicio)
+
+def comparacoes():
+    desordenado = []
+    for i in range(potencia_maxima):
+        fila_HSR.append([])
+        fila_HSI.append([])
+    
+    for i in range(potencia_maxima):
+        desordenado = gerar_pacientes_aleatorios(2**(i+1))
+        fila_HSR[i] = desordenado.copy()
+        fila_HSI[i] = desordenado.copy()
+
+    pool = mp.Pool(processes=quant_process)
+    HSR = pool.map(calc_tempos_HSR, range(0, potencia_maxima))
+
+    pool = mp.Pool(processes=quant_process)
+    HSI = pool.map(calc_tempos_HSI, range(0, potencia_maxima))
+
+    printar_grafico(HSR, HSI)
+
+def printar_grafico(HSR, HSI):
+    x = np.array([])
+
+    for i in range(potencia_maxima):
+        z = 2**(i+1)
+        x = np.append(x, z)
+
+    t = x
+
+    fig, ax = plt.subplots()
+    ax.set_title('Comparação entre os Algoritmos')
+    ax.set(xlabel='Quantidade de elementos', ylabel='Tempo (s)')
+    line1, = ax.plot(t, HSR, lw=2, color='red', label='Heap Sort Recursivo')
+    line2, = ax.plot(t, HSI, lw=2, color='blue', label='Heap Sort Interativo')
+    leg = ax.legend(loc='upper left', fancybox=True, shadow=True)
+    leg.get_frame().set_alpha(0.4)
+
+    lines = [line1, line2]
+    lined = dict()
+    for legline, origline in zip(leg.get_lines(), lines):
+        legline.set_picker(2)
+        lined[legline] = origline
+
+
+    def onpick(event):
+        legline = event.artist
+        origline = lined[legline]
+        vis = not origline.get_visible()
+        origline.set_visible(vis)
+
+        if vis:
+            legline.set_alpha(1.0)
+        else:
+            legline.set_alpha(0.2)
+        fig.canvas.draw()
+
+    fig.canvas.mpl_connect('pick_event', onpick)
+
+    plt.show()
