@@ -36,6 +36,8 @@ class Interface:
         frame4.pack()
         frame5 = Frame(instancia_Tk, background=bg_color, pady=6)
         frame5.pack()
+        frame6 = Frame(instancia_Tk, background=bg_color, pady=6)
+        frame6.pack()
 
         self.msgFila = Label(topo, text = "Quantidade de Pessoas: 0")
         self.msgFila.config(background=bg_color, font=text_font, padx=150)
@@ -71,6 +73,9 @@ class Interface:
 
         B9 = Button(frame5, text="Salvar", width=55, bg=button_color, font=option_button_font, command=self.salva_arquivo)
         B9.pack(side=RIGHT)
+
+        B10 = Button(frame6, text="Gerar Arvore", width=112, bg=button_color, font=option_button_font, command=lambda: printar_arvore(self.fila))
+        B10.pack(side=LEFT)
     
 
     def gerar_regist_aleat(self):

@@ -1,23 +1,30 @@
 def heapify(v, n, i): 
-    largest = i 
-    l = 2 * i + 1
-    r = 2 * i + 2
+    menor = i           # Inicializa menor como raiz
+    left = 2 * i + 1
+    right = 2 * i + 2 
 
-    if l < n and v[i] > v[l]: 
-        largest = l 
+    # Veririfca se o filho da esquerda da raiz existe e
+    # se é menor que a raíz
+    if left < n and v[i] > v[left]: 
+        menor = left 
 
-    if r < n and v[largest] > v[r]: 
-        largest = r 
+    # Veririfca se o filho da direita da raiz existe e
+    # se é menor que a raíz
+    if right < n and v[menor] > v[right]: 
+        menor = right 
 
-    if largest != i: 
-        v[i], v[largest] = v[largest], v[i]
+    # Muda a raíz, se necessário
+    if menor != i: 
+        v[i], v[menor] = v[menor], v[i]
  
-        heapify(v, n, largest)
+        # Dá um Heapify na raíz
+        heapify(v, n, menor)
 
 
 def heap_sort_recursivo(v): 
     n = len(v) 
 
+    # Constrói um Min Heap
     for i in range(n, -1, -1): 
         heapify(v, n, i)
 
@@ -26,20 +33,22 @@ def heap_sort_recursivo(v):
         heapify(v, i, 0)
 
 
-def buildMaxHeap(v, n):  
+def buildMinHeap(v, n):  
     for i in range(n): 
-        if v[i] > v[int((i - 1) / 2)]: 
+        if v[i] < v[int((i - 1) / 2)]: 
             j = i  
  
-            while v[j] > v[int((j - 1) / 2)]:
+            while v[j] < v[int((j - 1) / 2)]:
                 k = int((j - 1) / 2)
                 (v[j], v[k]) = (v[k], v[j]) 
                 j = k
+                if j == 0:
+                    break
 
 
 def heap_sort_interativo(v):  
     n = len(v)
-    buildMaxHeap(v, n)  
+    buildMinHeap(v, n)  
   
     for i in range(n - 1, 0, -1):  
         v[0], v[i] = v[i], v[0] 
@@ -48,10 +57,10 @@ def heap_sort_interativo(v):
         while True: 
             index = 2 * j + 1
 
-            if (index < (i - 1) and v[index] < v[index + 1]):  
+            if (index < (i - 1) and v[index] > v[index + 1]):  
                 index += 1
  
-            if index < i and v[j] < v[index]:  
+            if index < i and v[j] > v[index]:  
                 v[j], v[index] = v[index], v[j]  
           
             j = index  

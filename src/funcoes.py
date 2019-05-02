@@ -7,9 +7,11 @@ import matplotlib.pyplot as plt
 from paciente import Paciente
 from ordenacoes import *
 import plotly
+import plotly.plotly as py
 import plotly.graph_objs as go
 import numpy as np
 import multiprocessing as mp
+from graphviz import Digraph
 
 maiuscula = string.ascii_uppercase
 minuscula = string.ascii_lowercase
@@ -179,3 +181,19 @@ def printar_grafico(HSR, HSI):
     fig.canvas.mpl_connect('pick_event', onpick)
 
     plt.show()
+
+def printar_arvore(v):
+    if len(v) == 0:
+        return
+    
+    dot = Digraph(comment='The Round Table')
+    for i in range(len(v)):
+        dot.node(v.nome, v.nome)
+    
+    lista = []
+
+    for i in range(len(v)):
+        pass
+    
+    dot.edges(lista)
+    dot.render('test-output/round-table.gv', view=True)
