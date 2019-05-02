@@ -9,6 +9,14 @@ confirmation_button_font = ("Arial", "10", "bold")
 error_msg_font = ("Arial", "10", "bold")
 text_font = ("Arial", "20", "bold")
 
+def verificar_idade(idade):
+    if len(idade) == 0:
+        return "Idade nao pode estar em branco"
+
+    if idade.isdecimal() == False:
+        return "Idade deve ser apenas numeros"
+    
+    return int(idade)
 
 class Interface:
     def __init__(self, instancia_Tk):
@@ -169,31 +177,26 @@ class Interface:
     
 
     def verif_cadastro(self, nome, sexo, idade, gravidade, mensagem, tela):
-        paciente_unico(self.fila, ano, placa, dono, modelo)
-        self.desordenado.append(self.fila[len(self.fila)-1])
-        self.ordenado = False
-        self.msgFila["text"] = "Quantidade de Pessoas: {}".format(len(self.fila))
-        self.msgOrdenacao["text"] = "Tipo de Ordenacao: Nenhuma"
-        tela.destroy()
         try:
-            ano = verif_ano(ano)
-            ano = int(ano)
-            placa = verif_placa(placa)
-            if len(placa) != 7:
-                mensagem["text"] = placa
-            elif len(dono) == 0:
-                mensagem["text"] = "Dono em branco"
-            elif len(modelo) == 0:
-                mensagem["text"] = "Modelo em branco"
+            idade = verificar_idade(idade)
+            idade = int(idade)
+            if len(nome) == 0:
+                mensagem["text"] = "Nome nao pode estar em branco"
+            elif sexo != "M" and sexo != "F":
+                mensagem["text"] = "Sexo deve ser M ou F"
+            elif len(gravidade) == 0:
+                mensagem["text"] = "Gravidade nao pode estar em branco"
+            elif int(gravidade) < 1 or int(gravidade) > 5:
+                mensagem["text"] = "Gravidade deve estar entre 1 e 5"
             else:
-                paciente_unico(self.fila, ano, placa, dono, modelo)
+                paciente_unico(self.fila, nome, sexo, idade, gravidade)
                 self.desordenado.append(self.fila[len(self.fila)-1])
                 self.ordenado = False
                 self.msgFila["text"] = "Quantidade de Pessoas: {}".format(len(self.fila))
                 self.msgOrdenacao["text"] = "Tipo de Ordenacao: Nenhuma"
                 tela.destroy()
         except ValueError:
-            mensagem["text"] = ano
+            mensagem["text"] = idade
 
     def ord_aux(self, tipo, fila, tela):
         if tipo == "HSR":
