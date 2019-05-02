@@ -28,10 +28,10 @@ def heap_sort_recursivo(v):
 
 def buildMaxHeap(v, n):  
     for i in range(n): 
-        if v[i] < v[int((i - 1) / 2)]: 
+        if v[i] > v[int((i - 1) / 2)]: 
             j = i  
  
-            while v[j] < v[int((j - 1) / 2)]:
+            while v[j] > v[int((j - 1) / 2)]:
                 k = int((j - 1) / 2)
                 (v[j], v[k]) = (v[k], v[j]) 
                 j = k
@@ -48,10 +48,10 @@ def heap_sort_interativo(v):
         while True: 
             index = 2 * j + 1
 
-            if (index < (i - 1) and v[index] > v[index + 1]):  
+            if (index < (i - 1) and v[index] < v[index + 1]):  
                 index += 1
  
-            if index < i and v[j] > v[index]:  
+            if index < i and v[j] < v[index]:  
                 v[j], v[index] = v[index], v[j]  
           
             j = index  

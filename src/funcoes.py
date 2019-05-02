@@ -81,14 +81,14 @@ def comparar_ordenacoes(fila, desordenado):
     # Heap Sort Recursivo - HSR
     fila = desordenado.copy()
     inicio = time.perf_counter()
-    merge_sort(fila)
+    heap_sort_recursivo(fila)
     fim = time.perf_counter()
     lista_tempos['HSR'] = (fim - inicio)
 
     # Heap Sort Interativo - HSI
     fila = desordenado.copy()
     inicio = time.perf_counter()
-    merge_sort(fila)
+    heap_sort_interativo(fila)
     fim = time.perf_counter()
     lista_tempos['HSI'] = (fim - inicio)
 
@@ -105,7 +105,7 @@ def comparar_ordenacoes(fila, desordenado):
                  va='center', fontweight='bold', fontsize=12)
 
     plt.suptitle(
-        'Tempo em segundos para ordenar {} pacientes'.format(len(registros)))
+        'Tempo em segundos para ordenar {} pacientes'.format(len(fila)))
     plt.show()
 
 
