@@ -11,7 +11,7 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 import numpy as np
 import multiprocessing as mp
-from graphviz import Digraph
+from graphviz import Graph
 
 maiuscula = string.ascii_uppercase
 minuscula = string.ascii_lowercase
@@ -183,17 +183,22 @@ def printar_grafico(HSR, HSI):
     plt.show()
 
 def printar_arvore(v):
-    if len(v) == 0:
+    n = len(v)
+    if n == 0:
         return
     
-    dot = Digraph(comment='The Round Table')
-    for i in range(len(v)):
-        dot.node(v.nome, v.nome)
-    
-    lista = []
+    dot = Graph(format='png')
+    for i in range(n):
+        dot.node(v[i].nome, v[i].nome)
 
-    for i in range(len(v)):
-        pass
-    
-    dot.edges(lista)
-    dot.render('test-output/round-table.gv', view=True)
+    for i in range(n):
+        left = 2 * i + 1
+        right = 2 * i + 2
+
+        if left < n:
+            dot.edge(v[i].nome, v[left].nome, constraint='true')
+        
+        if right < n:
+            dot.edge(v[i].nome, v[right].nome, constraint='true')
+
+    dot.render('arvore.gv', view=True)
