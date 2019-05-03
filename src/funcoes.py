@@ -15,10 +15,8 @@ from graphviz import Graph
 
 maiuscula = string.ascii_uppercase
 minuscula = string.ascii_lowercase
-potencia_maxima = 20
-quant_process = 8
-fila_HSR = []
-fila_HSI = []
+potencia_maxima = 16
+quant_process = 4
 
 def gerar_pacientes_aleatorios(tamanho):
     pool = mp.Pool(processes=quant_process)
@@ -111,20 +109,27 @@ def comparar_ordenacoes(fila, desordenado):
     plt.show()
 
 
-def calc_tempos_HSR(i):
-    inicio = time.perf_counter()
-    heap_sort_recursivo(fila_HSR[i])
-    fim = time.perf_counter()
-    return (fim-inicio)
+def calc_tempos_HSR(fila, tempos):
+    for i in range(potencia_maxima):
+        inicio = time.perf_counter()
+        heap_sort_recursivo(fila[i])
+        fim = time.perf_counter()
+        tempos.append(fim-inicio)
 
-def calc_tempos_HSI(i):
-    inicio = time.perf_counter()
-    heap_sort_interativo(fila_HSI[i])
-    fim = time.perf_counter()
-    return (fim-inicio)
+def calc_tempos_HSI(fila, tempos):
+    for i in range(potencia_maxima):
+        inicio = time.perf_counter()
+        heap_sort_interativo(fila[i])
+        fim = time.perf_counter()
+        tempos.append(fim-inicio)
 
 def comparacoes():
     desordenado = []
+    fila_HSR = []
+    fila_HSI = []
+    tempo_HSR = []
+    tempo_HSI = []
+
     for i in range(potencia_maxima):
         fila_HSR.append([])
         fila_HSI.append([])
@@ -134,13 +139,10 @@ def comparacoes():
         fila_HSR[i] = desordenado.copy()
         fila_HSI[i] = desordenado.copy()
 
-    pool = mp.Pool(processes=quant_process)
-    HSR = pool.map(calc_tempos_HSR, range(0, potencia_maxima))
+    calc_tempos_HSR(fila_HSR, tempo_HSR)
+    calc_tempos_HSI(fila_HSI, tempo_HSI)
 
-    pool = mp.Pool(processes=quant_process)
-    HSI = pool.map(calc_tempos_HSI, range(0, potencia_maxima))
-
-    printar_grafico(HSR, HSI)
+    printar_grafico(tempo_HSR, tempo_HSI)
 
 def printar_grafico(HSR, HSI):
     x = np.array([])
@@ -189,7 +191,7 @@ def printar_arvore(v):
     
     dot = Graph(format='png')
     for i in range(n):
-        dot.node(v[i].nome, v[i].nome)
+        dot.node(v[i].nome)
 
     for i in range(n):
         left = 2 * i + 1
@@ -201,4 +203,4 @@ def printar_arvore(v):
         if right < n:
             dot.edge(v[i].nome, v[right].nome, constraint='true')
 
-    dot.render('arvore.gv', view=True)
+    dot.render('fila.gv', view=True)

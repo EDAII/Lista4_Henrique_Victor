@@ -43,8 +43,8 @@ def heap_sort_recursivo(v):
         v[i], v[0] = v[0], v[i]
         heapify(v, i, 0)
 
-    print("Quantidade de Swaps: ", swaps)
-    print("Quantidade de entradas no Heapify: ", qtd_heapify)
+    #print("Quantidade de Swaps: ", swaps)
+    #print("Quantidade de entradas no Heapify: ", qtd_heapify)
 
 
 def buildMinHeap(v, n):
@@ -87,4 +87,4 @@ def heap_sort_interativo(v):
             if index >= i: 
                 break
     
-    print("Quantidade de swaps: ", swaps)
+    #print("Quantidade de swaps: ", swaps)
