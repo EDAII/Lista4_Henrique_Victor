@@ -75,7 +75,7 @@ class Interface:
         B9 = Button(frame5, text="Salvar", width=55, bg=button_color, font=option_button_font, command=self.salva_arquivo)
         B9.pack(side=RIGHT)
 
-        B10 = Button(frame6, text="Gerar Arvore", width=112, bg=button_color, font=option_button_font, command=lambda: printar_arvore(self.fila))
+        B10 = Button(frame6, text="Gerar Arvore", width=112, bg=button_color, font=option_button_font, command=self.mostrar_arvore)
         B10.pack(side=LEFT)
     
 
@@ -195,7 +195,7 @@ class Interface:
             elif int(gravidade) < 1 or int(gravidade) > 5:
                 mensagem["text"] = "Gravidade deve estar entre 1 e 5"
             else:
-                paciente_unico(self.fila, nome, sexo, idade, gravidade)
+                paciente_unico(self.fila, nome, sexo, idade, int(gravidade))
                 self.desordenado.append(self.fila[len(self.fila)-1])
                 self.ordenado = False
                 self.msgFila["text"] = "Quantidade de Pessoas: {}".format(len(self.fila))
@@ -288,7 +288,7 @@ class Interface:
 
     def abre_arquivo(self):
         self.fila.clear()
-        path = filedialog.askopenfilename(initialdir = "/",title = "Selecione o Arquivo",filetypes = [("eda2 files","*.eda2")])
+        path = filedialog.askopenfilename(initialdir = "/",title = "Selecione o Arquivo",filetypes = [("L4 files","*.L4")])
 
         i = 0
         nome = ""
@@ -305,7 +305,7 @@ class Interface:
                     elif i == 1:
                         sexo = linha
                     elif i == 2:
-                        idade = linha
+                        idade = int(linha)
                     elif i == 3:
                         gravidade = int(linha)
                     else:
@@ -326,7 +326,7 @@ class Interface:
 
 
     def salva_arquivo(self):
-        path = filedialog.asksaveasfilename(initialdir = "/",title = "Selecione o Local para Salvar",filetypes = [("l4 files","*.l4")])
+        path = filedialog.asksaveasfilename(initialdir = "/",title = "Selecione o Local para Salvar",filetypes = [("L4 files","*.L4")])
         
         try:
             arq = open(path, 'w')
@@ -368,6 +368,11 @@ class Interface:
         else:
             mostrar_fila(self.fila, len(self.fila))
 
+    def mostrar_arvore(self):
+        if len(self.fila) == 0:
+            self.aviso("Nao ha nenhuma pessoa na fila")
+        else:
+            printar_arvore(self.fila)
 
 if __name__ == '__main__':
     menu=Tk()

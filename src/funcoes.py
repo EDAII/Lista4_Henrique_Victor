@@ -15,8 +15,8 @@ from graphviz import Graph
 
 maiuscula = string.ascii_uppercase
 minuscula = string.ascii_lowercase
-potencia_maxima = 16
-quant_process = 4
+potencia_maxima = 18
+quant_process = 8
 
 def gerar_pacientes_aleatorios(tamanho):
     pool = mp.Pool(processes=quant_process)
@@ -102,7 +102,7 @@ def comparar_ordenacoes(fila, desordenado):
     plt.bar(tipos, tempos)
 
     for i, v in enumerate(tempos):
-        plt.text(i-0.4, max(tempos)/100, " "+str(v), color='black',
+        plt.text(i-0.1, max(tempos)/100, " "+str(v), color='black',
                  va='center', fontweight='bold', fontsize=12)
 
     plt.suptitle('Tempo em segundos para ordenar {} pacientes'.format(len(fila)))
