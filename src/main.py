@@ -8,6 +8,7 @@ option_button_font = ("Arial", "15", "bold")
 confirmation_button_font = ("Arial", "10", "bold")
 error_msg_font = ("Arial", "10", "bold")
 text_font = ("Arial", "20", "bold")
+estatistica_font = ("Arial", "15", "bold")
 
 def verificar_idade(idade):
     if len(idade) == 0:
@@ -204,15 +205,58 @@ class Interface:
             mensagem["text"] = idade
 
     def ord_aux(self, tipo, fila, tela):
+        swaps, quant_heapify = 0, 0
         if tipo == "HSR":
-            heap_sort_recursivo(fila)
+            swaps, quant_heapify = heap_sort_recursivo(fila)
             self.msgOrdenacao["text"] = "Tipo de Ordenacao: Heap Sort Recursivo"
         elif tipo == "HSI":
-            heap_sort_interativo(fila)
+            swaps = heap_sort_interativo(fila)
             self.msgOrdenacao["text"] = "Tipo de Ordenacao: Heap Sort Interativo"
         
         self.ordenado = True
         tela.destroy()
+
+        est = Tk()
+        est.title('Estatisticas')
+
+        msg = Frame(est)
+        f1 = Frame(est)
+        f2 = Frame(est)
+        vazio = Frame(est)
+        botaoFrame = Frame(est)
+        msg.pack()
+        f1.pack()
+        f2.pack()
+        vazio.pack()
+        botaoFrame.pack()
+
+        titulo = Label(msg, text='ESTATISTICAS DESTE HEAP SORT', font=text_font, pady=30)
+        titulo.pack()
+
+        textSwap = Label(f1, text='Swaps: ', font=estatistica_font, pady=5)
+        textSwap.pack(side=LEFT)
+
+        numSwap = Label(f1, text=str(swaps), font=estatistica_font, pady=5, fg='red')
+        numSwap.pack(side=RIGHT)
+
+        vertical = 220
+
+        if quant_heapify != 0:
+            textQtH = Label(f2, text='Quantidade de Heapifys: ', font=estatistica_font, pady=5)
+            textQtH.pack(side=LEFT)
+
+            numQtH = Label(f2, text=str(quant_heapify), font=estatistica_font, pady=5, fg='red')
+            numQtH.pack(side=RIGHT)
+            vertical = 250
+        
+        vaziotext = Label(vazio, text=' ', pady=10)
+        vaziotext.pack()
+
+        botao = Button(botaoFrame, text=" OK ", command=est.destroy)
+        botao.pack()
+
+        est.geometry("550x"+str(vertical)+"+700+400")
+        est.mainloop()
 
 
     def ordenar(self):
@@ -282,7 +326,7 @@ class Interface:
 
 
     def salva_arquivo(self):
-        path = filedialog.asksaveasfilename(initialdir = "/",title = "Selecione o Local para Salvar",filetypes = [("eda2 files","*.eda2")])
+        path = filedialog.asksaveasfilename(initialdir = "/",title = "Selecione o Local para Salvar",filetypes = [("l4 files","*.l4")])
         
         try:
             arq = open(path, 'w')
@@ -327,7 +371,7 @@ class Interface:
 
 if __name__ == '__main__':
     menu=Tk()
-    menu.title('LISTA 3 - ESTRUTURA DE DADOS 2')
+    menu.title('LISTA 4 - ESTRUTURA DE DADOS 2')
     menu.config(background=bg_color)
     menu.geometry("1400x450+300+200")
     Interface(menu)
