@@ -110,18 +110,29 @@ def comparar_ordenacoes(fila, desordenado):
 
 
 def calc_tempos_HSR(fila, tempos):
+    vetor_swaps = []
+    vetor_heap = []
     for i in range(potencia_maxima):
         inicio = time.perf_counter()
-        heap_sort_recursivo(fila[i])
+        
+        swaps, heapify = heap_sort_recursivo(fila[i])
+        vetor_swaps.append(swaps)
+        vetor_heap.append(heapify)
+        fim = time.perf_counter()
+        tempos.append(fim-inicio)
+        
+    return vetor_heap, vetor_swaps
+
+def calc_tempos_HSI(fila, tempos):
+    vetor_swaps = []
+    for i in range(potencia_maxima):
+        inicio = time.perf_counter()
+        swaps = heap_sort_interativo(fila[i])
+        vetor_swaps.append(swaps)
         fim = time.perf_counter()
         tempos.append(fim-inicio)
 
-def calc_tempos_HSI(fila, tempos):
-    for i in range(potencia_maxima):
-        inicio = time.perf_counter()
-        heap_sort_interativo(fila[i])
-        fim = time.perf_counter()
-        tempos.append(fim-inicio)
+    return vetor_swaps
 
 def comparacoes():
     desordenado = []
@@ -139,12 +150,14 @@ def comparacoes():
         fila_HSR[i] = desordenado.copy()
         fila_HSI[i] = desordenado.copy()
 
-    calc_tempos_HSR(fila_HSR, tempo_HSR)
-    calc_tempos_HSI(fila_HSI, tempo_HSI)
+    heapHSR, swapsHSR = calc_tempos_HSR(fila_HSR, tempo_HSR)
+    swapsHSI = calc_tempos_HSI(fila_HSI, tempo_HSI)
 
-    printar_grafico(tempo_HSR, tempo_HSI)
+    
+    printar_grafico(tempo_HSR, tempo_HSI, swapsHSR, heapHSR, swapsHSI)
 
-def printar_grafico(HSR, HSI):
+def printar_grafico(HSR, HSI, swapsHSR, heapHSR, swapsHSI):
+    printar_swaps(swapsHSR, heapHSR, swapsHSI)
     x = np.array([])
 
     for i in range(potencia_maxima):
@@ -183,6 +196,47 @@ def printar_grafico(HSR, HSI):
     fig.canvas.mpl_connect('pick_event', onpick)
 
     plt.show()
+
+def printar_swaps(swapsHSR, heap, swapsHSI):
+    x = np.array([])
+
+    for i in range(potencia_maxima):
+        z = 2**(i+1)
+        x = np.append(x, z)
+
+    t = x
+
+    fig, ax = plt.subplots()
+    ax.set_title('Comparação entre os Algoritmos')
+    ax.set(xlabel='Quantidade de elementos ordenados', ylabel='Quantidade de Swaps e Heapify')
+    line1, = ax.plot(t, swapsHSR, lw=2, color='red', label='Swaps Heap Sort Recursivo')
+    line2, = ax.plot(t, heap, lw=2, color='blue', label='Heapify Heap Sort Recursivo')
+    line3, = ax.plot(t, swapsHSI, lw=2, color='green', label='Swaps Heap Sort Iterativo')
+    leg = ax.legend(loc='upper left', fancybox=True, shadow=True)
+    leg.get_frame().set_alpha(0.4)
+
+    lines = [line1, line2, line3]
+    lined = dict()
+    for legline, origline in zip(leg.get_lines(), lines):
+        legline.set_picker(2)
+        lined[legline] = origline
+
+
+    def onpick(event):
+        legline = event.artist
+        origline = lined[legline]
+        vis = not origline.get_visible()
+        origline.set_visible(vis)
+
+        if vis:
+            legline.set_alpha(1.0)
+        else:
+            legline.set_alpha(0.2)
+        fig.canvas.draw()
+
+    fig.canvas.mpl_connect('pick_event', onpick)
+
+
 
 def printar_arvore(v):
     dic_num_color = {5: 'red', 4: 'orange', 3: 'yellow', 2: 'green', 1: 'dodgerblue'}
