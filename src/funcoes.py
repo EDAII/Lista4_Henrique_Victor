@@ -185,13 +185,14 @@ def printar_grafico(HSR, HSI):
     plt.show()
 
 def printar_arvore(v):
+    dic_num_color = {5: 'red', 4: 'orange', 3: 'yellow', 2: 'green', 1: 'dodgerblue'}
     n = len(v)
     if n == 0:
         return
     
     dot = Graph(format='png')
     for i in range(n):
-        dot.node(v[i].nome)
+        dot.node(v[i].nome, fillcolor=dic_num_color[v[i].gravidade], style='filled')
 
     for i in range(n):
         left = 2 * i + 1
