@@ -205,12 +205,18 @@ class Interface:
             mensagem["text"] = idade
 
     def ord_aux(self, tipo, fila, tela):
-        swaps, quant_heapify = 0, 0
+        swaps, quant_heapify, tempo = 0, 0, 0
         if tipo == "HSR":
+            inicio = time.perf_counter()
             swaps, quant_heapify = heap_sort_recursivo(fila)
+            fim = time.perf_counter()
+            tempo = fim - inicio
             self.msgOrdenacao["text"] = "Tipo de Ordenacao: Heap Sort Recursivo"
         elif tipo == "HSI":
+            inicio = time.perf_counter()
             swaps = heap_sort_interativo(fila)
+            fim = time.perf_counter()
+            tempo = fim - inicio
             self.msgOrdenacao["text"] = "Tipo de Ordenacao: Heap Sort Interativo"
         
         self.ordenado = True
@@ -222,32 +228,40 @@ class Interface:
         msg = Frame(est)
         f1 = Frame(est)
         f2 = Frame(est)
+        f3 = Frame(est)
         vazio = Frame(est)
         botaoFrame = Frame(est)
         msg.pack()
         f1.pack()
         f2.pack()
+        f3.pack()
         vazio.pack()
         botaoFrame.pack()
 
         titulo = Label(msg, text='ESTATISTICAS DESTE HEAP SORT', font=text_font, pady=30)
         titulo.pack()
 
-        textSwap = Label(f1, text='Swaps: ', font=estatistica_font, pady=5)
+        textSwap = Label(f1, text='Tempo (segundos): ', font=estatistica_font, pady=5)
         textSwap.pack(side=LEFT)
 
-        numSwap = Label(f1, text=str(swaps), font=estatistica_font, pady=5, fg='red')
+        numSwap = Label(f1, text=str(tempo), font=estatistica_font, pady=5, fg='red')
         numSwap.pack(side=RIGHT)
 
-        vertical = 220
+        textSwap = Label(f2, text='Swaps: ', font=estatistica_font, pady=5)
+        textSwap.pack(side=LEFT)
+
+        numSwap = Label(f2, text=str(swaps), font=estatistica_font, pady=5, fg='red')
+        numSwap.pack(side=RIGHT)
+
+        vertical = 250
 
         if quant_heapify != 0:
-            textQtH = Label(f2, text='Quantidade de Heapifys: ', font=estatistica_font, pady=5)
+            textQtH = Label(f3, text='Quantidade de Heapifys: ', font=estatistica_font, pady=5)
             textQtH.pack(side=LEFT)
 
-            numQtH = Label(f2, text=str(quant_heapify), font=estatistica_font, pady=5, fg='red')
+            numQtH = Label(f3, text=str(quant_heapify), font=estatistica_font, pady=5, fg='red')
             numQtH.pack(side=RIGHT)
-            vertical = 250
+            vertical = 280
         
         vaziotext = Label(vazio, text=' ', pady=10)
         vaziotext.pack()

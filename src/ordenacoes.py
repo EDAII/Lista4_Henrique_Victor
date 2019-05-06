@@ -35,7 +35,7 @@ def heap_sort_recursivo(v):
 
     n = len(v)
     # Constrói um Min Heap
-    for i in range(n, -1, -1): 
+    for i in range((n//2)-1, -1, -1): 
         heapify(v, n, i)
 
     for i in range(n-1, 0, -1):
