@@ -56,3 +56,10 @@ Se quiser, o usuário pode comparar os métodos de ordenação de duas maneiras 
  - Comparar o tempo que cada método leva para ordenar filas aleatórias de tamanhos diferentes
 
 O usuário pode também salvar a fila em um arquivo e carregar os dados de um arquivo no programa.
+
+Caso deseje, o usuário pode gerar uma árvore com a fila de pacientes, mostrando os pacientes em uma estrutura de Heap com os nós coloridos, sendo cada cor um grau de urgência, com o seguinte padrão:
+ - Vermelho: Gravidade 5 (máxima urgência)
+ - Laranja: Gravidade 4 (alta urgência)
+ - Amarelo: Gravidade 3 (urgência)
+ - Verde: Gravidade 2 (pouca urgência)
+ - Azul: Gravidade 1 (nenhuma urgência)

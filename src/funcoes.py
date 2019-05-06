@@ -15,7 +15,7 @@ from graphviz import Graph
 
 maiuscula = string.ascii_uppercase
 minuscula = string.ascii_lowercase
-potencia_maxima = 18
+potencia_maxima = 17
 quant_process = 8
 
 def gerar_pacientes_aleatorios(tamanho):
@@ -114,11 +114,10 @@ def calc_tempos_HSR(fila, tempos):
     vetor_heap = []
     for i in range(potencia_maxima):
         inicio = time.perf_counter()
-        
         swaps, heapify = heap_sort_recursivo(fila[i])
+        fim = time.perf_counter()
         vetor_swaps.append(swaps)
         vetor_heap.append(heapify)
-        fim = time.perf_counter()
         tempos.append(fim-inicio)
         
     return vetor_heap, vetor_swaps
@@ -128,8 +127,8 @@ def calc_tempos_HSI(fila, tempos):
     for i in range(potencia_maxima):
         inicio = time.perf_counter()
         swaps = heap_sort_interativo(fila[i])
-        vetor_swaps.append(swaps)
         fim = time.perf_counter()
+        vetor_swaps.append(swaps)
         tempos.append(fim-inicio)
 
     return vetor_swaps
